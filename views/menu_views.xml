@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="property_menu_root" name="ShortLinks">
+        <menuitem
+            id="property_first_level_menu"
+            name="ShortLinks"
+            action="tli_shortlink_model_action"
+        />
+    </menuitem>
+</odoo>
