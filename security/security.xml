@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- RES.GROUPS.PRIVILEGE -->
+    <record id="groups_privilege_tli_shortlink" model="res.groups.privilege">
+        <field name="name">TLI ShortLink</field>
+        <field name="category_id" ref="base.module_category_thelastimperial_shortlink"/>
+    </record>
+
+    <!-- RES.GROUPS -->
+    <record id="group_tli_shortlink_monitor" model="res.groups">
+        <field name="name">Monitor</field>
+        <field name="comment">User that just can see the data.</field>
+        <field name="privilege_id" ref="groups_privilege_tli_shortlink"/>
+        <field name="implied_ids" eval="[(6, 0, [ref('base.group_user')])]"/>
+    </record>
+
+    <record id="group_tli_shortlink_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="comment">User that can create shortlinks.</field>
+        <field name="privilege_id" ref="groups_privilege_tli_shortlink"/>
+        <field name="implied_ids" eval="[(6, 0, [ref('group_tli_shortlink_monitor')])]"/>
+    </record>
+
+    <record id="group_tli_shortlink_admin" model="res.groups">
+        <field name="name">Admin</field>
+        <field name="comment">Admin shortlink.</field>
+        <field name="implied_ids" eval="[(4, ref('group_tli_shortlink_user'))]"/>
+        <field name="privilege_id" ref="groups_privilege_tli_shortlink"/>
+        <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- IR.RULE -->
+    <!-- The monitor and the user just can see the shortlink for his company. -->
+    <record id="rule_tli_shortlink_monitor_user" model="ir.rule">
+        <field name="name">Rule agent</field>
+        <field name="model_id" ref="model_tli_shortlink"/>
+        <!-- <field name="perm_read" eval="False"/> -->
+        <field name="groups" eval="[
+            Command.link(ref('group_tli_shortlink_monitor')),
+            Command.link(ref('group_tli_shortlink_user')),
+            Command.link(ref('group_tli_shortlink_admin')),
+        ]"/>
+        <field name="domain_force">[
+            ('company_id', 'in', company_ids)
+        ]</field>
+    </record>
+
+    <!-- IR.MODEL.ACCESS -->
+     <!-- Monitor Group -->
+    <record id="access_tli_shortlink_monitor" model="ir.model.access">
+        <field name = "name">access_tli_shortlink_monitor</field>
+        <field name="model_id" ref="tli_shortlink.model_tli_shortlink"/>
+        <field name="group_id" ref="group_tli_shortlink_monitor"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">0</field>
+        <field name="perm_create">0</field>
+        <field name="perm_unlink">0</field>
+    </record>
+
+    <!-- Group User -->
+    <record id="access_tli_shortlink_user" model="ir.model.access">
+        <field name = "name">access_tli_shortlink_user</field>
+        <field name="model_id" ref="tli_shortlink.model_tli_shortlink"/>
+        <field name="group_id" ref="group_tli_shortlink_user"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">1</field>
+        <field name="perm_create">1</field>
+        <field name="perm_unlink">0</field>
+    </record>
+
+    <!-- Group Admin -->
+    <record id="access_tli_shortlink_admin" model="ir.model.access">
+        <field name = "name">access_tli_shortlink_admin</field>
+        <field name="model_id" ref="tli_shortlink.model_tli_shortlink"/>
+        <field name="group_id" ref="group_tli_shortlink_admin"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">1</field>
+        <field name="perm_create">1</field>
+        <field name="perm_unlink">1</field>
+    </record>
+
+</odoo>
